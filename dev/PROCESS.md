@@ -165,6 +165,17 @@ patch = reader.read_rect(location=(loc_x, loc_y), size=(256, 256),
                          coord_space="resolution")
 ```
 
+**All TIAToolbox read APIs confirmed affected** (tested locally with `dev/test_dicom_reader_bug.py`):
+- `read_bounds`, `read_rect`, `PointsPatchExtractor`, `SlidingWindowPatchExtractor`, `TilePyramidGenerator`
+- All fail at resolutions mapping to non-baseline pyramid levels; all work at native resolution
+
+**Applied to all 7 notebooks** (not just Notebook 01):
+- NB 01: Multi-resolution demo uses native read + PIL resize
+- NB 02: `SlidingWindowPatchExtractor` uses native resolution
+- NB 03: `find_tissue_patch()` uses `read_rect` at native with `coord_space="resolution"`
+- NB 04: Patch visualization uses `read_bounds` at native
+- NB 05-07: Tile extraction uses `read_bounds` at native + PIL resize to target size
+
 ## Remaining Known Limitations
 
 ### Notebooks Not Fully Executed
