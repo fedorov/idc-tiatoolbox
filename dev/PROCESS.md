@@ -135,17 +135,30 @@ if info.mpp is None:
 ```
 Applied to all 7 notebooks.
 
-### 5. `read_rect` Coordinate System with DICOMWSIReader
+### 5. `read_bounds`/`read_rect` Coordinate Bug with DICOMWSIReader
 
-**Problem:** `WSIReader.read_rect()` defaults to `coord_space="baseline"`, but the DICOMWSIReader (via wsidicom) raises `WsiDicomOutOfBoundsError` when baseline coordinates exceed the target pyramid level dimensions. Using `coord_space="resolution"` with properly scaled coordinates also triggers the same error when reading at lower resolutions (e.g., 5x or 10x from a 20x slide).
+**Problem:** Both `read_bounds()` and `read_rect()` pass baseline coordinates unscaled to `wsidicom` when the requested resolution maps to a non-baseline pyramid level. This causes `WsiDicomOutOfBoundsError` whenever baseline coordinates exceed the target level's dimensions.
 
-**Fix:** For multi-resolution viewing of the same region, use `read_bounds()` instead — it accepts a bounding box in baseline coordinates and handles resolution scaling internally:
+**Root cause (confirmed by local testing):** The test slide (C3L-03262, 9959x9023 at 20x) has two pyramid levels: level 0 (9959x9023, baseline) and level 1 (2489x2255, ~5x). When requesting at 5x, TIAToolbox reads from level 1 but passes baseline coordinates (e.g., position 3843,3951) which exceed level 1's size (2489x2255). The same error occurs with `read_bounds`, `read_rect` (both `coord_space="baseline"` and `coord_space="resolution"`), and at any resolution that maps to level 1 (including mpp ≥ 2.0). Resolutions that read from level 0 and post-process (e.g., 10x, 7.5x, 5.1x) work fine because baseline coordinates are valid for level 0.
+
+**Fix:** Read at native resolution and resize with PIL:
 ```python
-bounds = (left, top, right, bottom)  # baseline coordinates
-region = reader.read_bounds(bounds=bounds, resolution=power, units="power")
+from PIL import Image
+
+# Read at native (always reads from level 0 where baseline coords are valid)
+region_native = reader.read_bounds(
+    bounds=bounds, resolution=info.objective_power, units="power"
+)
+
+# Resize to target magnification
+scale = target_power / info.objective_power
+region = np.array(Image.fromarray(region_native).resize(
+    (int(region_native.shape[1] * scale), int(region_native.shape[0] * scale)),
+    Image.LANCZOS
+))
 ```
 
-For fixed-size patch extraction, use `read_rect()` at the **native** resolution with `coord_space="resolution"` (where resolution coordinates equal baseline coordinates):
+For fixed-size patch extraction, `read_rect()` at the **native** resolution with `coord_space="resolution"` works reliably (since at native resolution, coordinates equal baseline coordinates):
 ```python
 patch = reader.read_rect(location=(loc_x, loc_y), size=(256, 256),
                          resolution=native_power, units="power",
