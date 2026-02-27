@@ -2,6 +2,8 @@
 
 Working examples demonstrating [TIAToolbox](https://github.com/TissueImageAnalytics/tiatoolbox) computational pathology analysis tools applied to slide microscopy data from [NCI Imaging Data Commons (IDC)](https://portal.imaging.datacommons.cancer.gov/).
 
+![splash](https://github.com/ImagingDataCommons/idc-tiatoolbox/blob/main/dev/splash.jpeg?raw=true)
+
 ## Overview
 
 [TIAToolbox](https://tia-toolbox.readthedocs.io/) is a comprehensive Python library for computational pathology providing WSI reading, stain normalization, tissue detection, patch classification, semantic segmentation, nucleus instance segmentation, and more -- all with pretrained deep learning models.
