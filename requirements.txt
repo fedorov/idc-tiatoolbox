@@ -21,3 +21,6 @@ matplotlib
 
 # Geometry (for annotation comparison)
 shapely
+
+# Image analysis (for segmentation comparison)
+scikit-image

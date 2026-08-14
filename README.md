@@ -23,6 +23,7 @@ TIAToolbox's `DICOMWSIReader` can directly read IDC's DICOM WSI files, making th
 | 05 | [Semantic Segmentation](notebooks/05_semantic_segmentation.ipynb) | SemanticSegmentor | TCGA breast | Recommended |
 | 06 | [Nucleus Segmentation](notebooks/06_nucleus_instance_segmentation.ipynb) | NucleusInstanceSegmentor | TCGA | Required |
 | 07 | [Comparing with IDC Annotations](notebooks/07_comparing_with_idc_annotations.ipynb) | HoVer-Net, SQLiteStore | TCGA + Pan-Cancer ANN | Recommended |
+| 08 | [Comparing with IDC Segmentations](notebooks/08_comparing_with_idc_segmentations.ipynb) | HoVer-Net | TCGA + Pan-Cancer SEG | Recommended |
 
 ## TIAToolbox Version
 
@@ -53,7 +54,7 @@ jupyter notebook notebooks/
 
 - A Google account (for Colab) or local Python 3.9+ environment
 - No authentication needed for IDC data access
-- GPU runtime recommended for notebooks 04-07 (free T4 GPU available on Colab)
+- GPU runtime recommended for notebooks 04-08 (free T4 GPU available on Colab)
 
 ## Estimated Data Downloads
 
@@ -66,6 +67,7 @@ jupyter notebook notebooks/
 | 05 | ~300 MB + model weights |
 | 06 | ~300 MB + model weights |
 | 07 | ~500 MB + model weights |
+| 08 | ~50-200 MB + model weights |
 
 ## Resources
 
